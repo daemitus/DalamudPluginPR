@@ -1,0 +1,29 @@
+# action.yml
+name: DalamudPlugin PR
+description: Create a PR at goatcorp/DalamudPlugins with your build artifact.
+inputs:
+  enabled:  
+    description: Enable or disable the entire action. This can be true/false or a partial string searched for within the commit message.
+    default: "[PR]"
+    required: false
+  testing:
+    description: If the artifact should be commited to testing instead of plugins. This can be true/false or a partial string searched for within the commit message.
+    default: "[TEST]"
+    required: false
+  repository:
+    description: Repository where your artifact will be committed.
+    default: ${{ github.repository_owner }}/DalamudPlugins
+    required: false
+  pr_repository:
+    description: Repository where the PR will be created.
+    default: goatcorp/DalamudPlugins
+    required: false
+  token:
+    description: Personal access token to authenticate with GitHub.
+    required: true
+  artifact_path:
+    description: Path of the (downloaded) artifact, created via DalamudPacker or manually.
+    required: true
+runs:
+  using: docker
+  image: Dockerfile
