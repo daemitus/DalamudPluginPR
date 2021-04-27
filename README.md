@@ -1,6 +1,6 @@
 # DalamudPluginPR
 
-This action checks-out your fork of `goatcorp/DalamudPlugins` commits the build artifact and create a PR for the Dalamud moderation team to review. It runs in a Docker container so your choice of runner is not affected.
+This action checks-out your fork of `goatcorp/DalamudPlugins` commits the build artifact and creates a PR for the Dalamud moderation team to review. It runs in a Docker container so your choice of runner is not affected.
 
 Your artifact should contain the JSON plugin manifest and latest.zip. If you are unfamiliar with how to create these files, look into using [DalamudPackager](https://github.com/goatcorp/DalamudPackager) in your existing build process.
 
