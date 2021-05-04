@@ -7,6 +7,7 @@ message=$( jq -r '.commits[0].message' "${GITHUB_EVENT_PATH}" )
 echo "> message=${message}"
 
 # Check if enabled is true/false/substring
+echo "> enabled_flag=${INPUT_ENABLED}"
 if [ "${INPUT_ENABLED}" = true ]; then
   echo "> Action enabled: true"
   enabled=true
@@ -28,6 +29,7 @@ if ! "${enabled}"; then
 fi
 
 # Check if testing is true/false/substring
+echo "> testing_flag=${INPUT_TESTING}"
 if [ "${INPUT_TESTING}" = true ]; then
   echo "> Testing enabled: true"
   testing=true
