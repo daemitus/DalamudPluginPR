@@ -4,6 +4,8 @@ set -euo pipefail
 
 message=$( jq -r '.commits[0].message' "${GITHUB_EVENT_PATH}" )
 
+echo "> message=${message}"
+
 # Check if enabled is true/false/substring
 if [ "${INPUT_ENABLED}" = true ]; then
   echo "> Action enabled: true"
