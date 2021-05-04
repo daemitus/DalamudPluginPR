@@ -36,7 +36,7 @@ if [ "${INPUT_TESTING}" = true ]; then
 elif [ "${INPUT_TESTING}" = false ]; then
   echo "> Testing disabled: false"
   testing=false
-elif echo "${message}" | grep -q "${INPUT_TESTING}"; then
+elif echo "${message}" | grep -qF "${INPUT_TESTING}"; then
   echo "> Testing enabled: substring match"
   testing=true
 else
@@ -128,7 +128,7 @@ if [ "${prNumber}" ]; then
   gh api "repos/${prRepo}/pulls/${prNumber}" --silent --method PATCH -f "title=${prTitle}" -f "body=${prBody}" -f "state=open"
 else
   echo "> Creating PR"
-  #gh pr create --repo "${prRepo}" --title "${prTitle}" --body "${prBody}"
+  gh pr create --repo "${prRepo}" --title "${prTitle}" --body "${prBody}"
 fi
 
 echo "> Done"
