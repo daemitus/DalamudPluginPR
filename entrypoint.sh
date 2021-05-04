@@ -90,11 +90,11 @@ fi
 # Copy the artifact where it needs to go
 cd ..
 
+if [ -d "repo/testing/${internalName}" ]; then
+  echo "> Deleting testing plugin directory"
+  rm -rf "repo/testing/${internalName}"
+fi
 if "${testing}"; then
-  if [ -d "repo/testing/${internalName}" ]; then
-    echo "> Deleting testing plugin directory"
-    rm -rf "repo/testing/${internalName}"
-  fi
   echo "> Moving artifact to testing"
   mv "${artifact}" "repo/testing/${internalName}"
 else
