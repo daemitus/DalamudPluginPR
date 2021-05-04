@@ -93,7 +93,10 @@ cd ..
 if [ -d "repo/testing/${internalName}" ]; then
   echo "> Deleting testing plugin directory"
   rm -rf "repo/testing/${internalName}"
+else
+  echo "> Testing plugin directory not present"
 fi
+
 if "${testing}"; then
   echo "> Moving artifact to testing"
   mv "${artifact}" "repo/testing/${internalName}"
@@ -101,7 +104,10 @@ else
   if [ -d "repo/plugins/${internalName}" ]; then
     echo "> Deleting plugin directory"
     rm -rf "repo/plugins/${internalName}"
+  else
+    echo "> Plugin directory not present"
   fi
+  
   echo "> Moving artifact to plugins"
   mv "${artifact}" "repo/plugins/${internalName}"
 fi
