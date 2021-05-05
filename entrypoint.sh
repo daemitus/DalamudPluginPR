@@ -79,9 +79,10 @@ git config remote.origin.url "${originUrl}"
 if git show-ref --quiet "refs/heads/${pluginName}"; then
   echo "> Branch ${pluginName} already exists, reseting to master"
   git checkout "${pluginName}"
-  git reset --hard master
+  git reset --hard pr_repo/master
 else
   echo "> Creating new branch ${pluginName}"
+  git reset --hard pr_repo/master
   git branch "${pluginName}"
   git checkout "${pluginName}"
   git push --set-upstream origin --force "${pluginName}"
@@ -107,7 +108,7 @@ else
   else
     echo "> Plugin directory not present"
   fi
-  
+
   echo "> Moving artifact to plugins"
   mv "${artifact}" "repo/plugins/${internalName}"
 fi
