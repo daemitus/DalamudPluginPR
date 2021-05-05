@@ -139,7 +139,7 @@ if [ "${prNumber}" ]; then
   gh api "repos/${prRepo}/pulls/${prNumber}" --silent --method PATCH -f "title=${prTitle}" -f "body=${prBody}" -f "state=open"
 else
   echo "> Creating PR"
-  #gh pr create --repo "${prRepo}" --title "${prTitle}" --body "${prBody}"
+  gh pr create --repo "${prRepo}" --title "${prTitle}" --body "${prBody}"
 fi
 
 echo "> Done"
