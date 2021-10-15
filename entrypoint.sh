@@ -120,7 +120,7 @@ git add --all
 git commit --all -m "Update ${pluginName} ${assemblyVersion}"
 
 echo "> Pushing to origin"
-git push --force --quiet origin
+git push --force origin
 
 prRepo="${INPUT_PR_REPOSITORY}"
 
