@@ -44,15 +44,23 @@ else
   testing=false
 fi
 
-# Login to GitHub
-echo "> Logging into GitHub"
-echo "${INPUT_TOKEN}" | gh auth login --with-token
-
 # Setup artifact data
 artifact="${INPUT_ARTIFACT_PATH}"
 pluginName=$(jq -r '.Name' "${artifact}"/*.json)
 internalName=$(jq -r '.InternalName' "${artifact}"/*.json)
 assemblyVersion=$(jq -r '.AssemblyVersion' "${artifact}"/*.json)
+
+# Setup git variables
+owner="${INPUT_REPOSITORY/\/*/}"
+repo="${INPUT_REPOSITORY}"
+prRepo="${INPUT_PR_REPOSITORY}"
+branch="${pluginName/ /}"
+prBranch="${INPUT_PR_BRANCH}"
+token="${INPUT_TOKEN}"
+
+# Login to GitHub
+echo "> Logging into GitHub"
+echo "${token}" | gh auth login --with-token
 
 echo "> Configuring git user"
 authorName=$(jq -r '.commits[0].author.name' "${GITHUB_EVENT_PATH}")
@@ -61,31 +69,31 @@ git config --global user.name "${authorName}"
 git config --global user.email "${authorEmail}"
 
 # Setup plugin repo
-echo "> Setting up ${INPUT_REPOSITORY}"
-gh repo clone "${INPUT_REPOSITORY}" repo
+echo "> Setting up ${repo}"
+gh repo clone "${repo}" repo
 cd repo
-git remote add pr_repo "https://github.com/${INPUT_PR_REPOSITORY}.git"
+git remote add pr_repo "https://github.com/${prRepo}.git"
 git fetch pr_repo
 git fetch origin
 
 # Fixup the remote url so it can be pushed to
 echo "> Adding token to origin push url"
 originUrl=$(git config --get remote.origin.url | cut -d '/' -f 3-)
-originUrl="https://${INPUT_TOKEN}@${originUrl}"
+originUrl="https://${token}@${originUrl}"
 git config remote.origin.url "${originUrl}"
 
 # The branch name is hardcoded to the plugin's name.
 # If it already exists, hard reset to master.
-if git show-ref --quiet "refs/heads/${pluginName}"; then
-  echo "> Branch ${pluginName} already exists, reseting to master"
-  git checkout "${pluginName}"
-  git reset --hard pr_repo/master
+if git show-ref --quiet "refs/heads/${branch}"; then
+  echo "> Branch ${branch} already exists, reseting to master"
+  git checkout "${branch}"
+  git reset --hard "pr_repo/${prBranch}"
 else
-  echo "> Creating new branch ${pluginName}"
-  git reset --hard pr_repo/master
-  git branch "${pluginName}"
-  git checkout "${pluginName}"
-  git push --set-upstream origin --force "${pluginName}"
+  echo "> Creating new branch ${branch}"
+  git reset --hard "pr_repo/${prBranch}"
+  git branch "${branch}"
+  git checkout "${branch}"
+  git push --set-upstream origin --force "${branch}"
 fi
 
 # Copy the artifact where it needs to go
@@ -120,9 +128,7 @@ git add --all
 git commit --all -m "Update ${pluginName} ${assemblyVersion}"
 
 echo "> Pushing to origin"
-git push --force origin
-
-prRepo="${INPUT_PR_REPOSITORY}"
+git push --force --set-upstream origin "${branch}"
 
 # The PR title is the friendly name and assembly version
 prTitle="${pluginName} ${assemblyVersion}"
@@ -133,13 +139,13 @@ fi
 # The PR body is the body of the last commit
 prBody=$(echo "${message}" | tail -n +2)
 
-prNumber=$(gh api repos/${prRepo}/pulls | jq ".[] | select(.head.ref == \"${pluginName}\") | .number")
+prNumber=$(gh api repos/${prRepo}/pulls | jq ".[] | select(.head.ref == \"${branch}\") | .number")
 if [ "${prNumber}" ]; then
   echo "> Editing existing PR"
   gh api "repos/${prRepo}/pulls/${prNumber}" --silent --method PATCH -f "title=${prTitle}" -f "body=${prBody}" -f "state=open"
 else
   echo "> Creating PR"
-  gh pr create --repo "${prRepo}" --title "${prTitle}" --body "${prBody}"
+  gh pr create --repo "${prRepo}" --head "${owner}:${branch}" --base "${prBranch}" --title "${prTitle}" --body "${prBody}"
 fi
 
 echo "> Done"

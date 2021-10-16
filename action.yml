@@ -18,6 +18,10 @@ inputs:
     description: Repository where the PR will be created.
     default: goatcorp/DalamudPlugins
     required: false
+  pr_branch:
+    description: Branch to merge your PR into.
+    default: api4
+    required: false
   token:
     description: Personal access token to authenticate with GitHub.
     required: true
