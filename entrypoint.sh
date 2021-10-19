@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-message=$(jq -r '.commits[0].message' "${GITHUB_EVENT_PATH}")
+message=$(jq -r '.commits[-1].message' "${GITHUB_EVENT_PATH}")
 
 echo "> message=${message}"
 
