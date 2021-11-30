@@ -35,7 +35,7 @@ jobs:
         path: PluginArtifact  
     
     - name: Create pull request
-      uses: daemitus/DalamudPluginPR@v1
+      uses: daemitus/DalamudPluginPR@master
       with: 
         # ===== Required inputs =====
         # Personal access token to authenticate with GitHub.
