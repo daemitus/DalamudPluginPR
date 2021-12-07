@@ -20,7 +20,7 @@ inputs:
     required: false
   pr_branch:
     description: Branch to merge your PR into.
-    default: api4
+    default: api5
     required: false
   token:
     description: Personal access token to authenticate with GitHub.
